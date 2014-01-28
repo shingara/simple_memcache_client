@@ -29,6 +29,7 @@ client.set('foo', 'bar', 1)
 client.set('bar', 'baz')
 puts client.get('foo')
 puts client.get('bar')
+client.close
 ```
 
 You can define a pool of socket you want.
@@ -45,6 +46,7 @@ client = SimpleMemcacheClient.new('localhost', 11211, 10)
     puts client.get('bar')
   end
 end
+client.close
 ```
 
 Only 10 sockets are connect to memecached

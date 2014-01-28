@@ -29,5 +29,6 @@ describe "Basic usage" do
       end
     end
     threads.map(&:value)
+    client.close
   end
 end

@@ -16,6 +16,10 @@ class SimpleMemcacheClient::Client
     server.get(key)
   end
 
+  def close
+    servers.each(&:close)
+  end
+
   private
 
   def servers

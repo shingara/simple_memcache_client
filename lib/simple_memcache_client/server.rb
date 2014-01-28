@@ -24,6 +24,10 @@ class SimpleMemcacheClient::Server
     end
   end
 
+  def close
+    socket.close
+  end
+
   private
 
   def socket
