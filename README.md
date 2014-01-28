@@ -31,6 +31,32 @@ puts client.get('foo')
 puts client.get('bar')
 ```
 
+You can define a pool of socket you want.
+
+```
+require 'simple_memcache_client'
+
+client = SimpleMemcacheClient.new('localhost', 11211, 10)
+500.times do |i|
+  threads << Thread.new do
+    client.set('foo', 'bar', 1)
+    client.set('bar', 'baz')
+    puts client.get('foo')
+    puts client.get('bar')
+  end
+end
+```
+
+Only 10 sockets are connect to memecached
+
+
+## Test
+
+There are some test attach to this project. You can launch it by
+
+```
+rake spec
+```
 
 ## Contributing
 
