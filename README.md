@@ -19,7 +19,18 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You just need instanciate a client and you can do get and set.
+
+```
+require 'simple_memcache_client'
+
+client = SimpleMemcacheClient.new('localhost')
+client.set('foo', 'bar', 1)
+client.set('bar', 'baz')
+puts client.get('foo')
+puts client.get('bar')
+```
+
 
 ## Contributing
 
