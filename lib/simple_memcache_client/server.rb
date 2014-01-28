@@ -5,18 +5,23 @@ class SimpleMemcacheClient::Server
   def initialize(hostname, port)
     @hostname = hostname
     @port = port
+    @lock = Monitor.new
   end
 
   def set(key, value, ttl)
-    req = "set #{key} 0 #{ttl} #{value.bytesize}\n#{value}\r\n"
-    socket.write(req)
-    socket.gets == "STORED\r\n"
+    @lock.synchronize do
+      req = "set #{key} 0 #{ttl} #{value.bytesize}\n#{value}\r\n"
+      write(req)
+      stored?
+    end
   end
 
   def get(key)
-    req = "get #{key}\r\n"
-    write(req)
-    read_result
+    @lock.synchronize do
+      req = "get #{key}\r\n"
+      write(req)
+      read_result
+    end
   end
 
   private
@@ -29,6 +34,10 @@ class SimpleMemcacheClient::Server
     socket.write(bytes)
   end
 
+  def gets
+    socket.gets
+  end
+
   def read_result
     if socket.gets =~ /^VALUE/
       val = ''
@@ -39,5 +48,9 @@ class SimpleMemcacheClient::Server
       end
       val.chomp
     end
+  end
+
+  def stored?
+    gets == "STORED\r\n"
   end
 end

@@ -15,4 +15,19 @@ describe "Basic usage" do
     expect(client.get('foo')).to eq first_value
     expect(client.get('bar')).to eq second_value
   end
+
+  it 'with a client and thread env' do
+    client = SimpleMemcacheClient::Client.new('localhost', 11211, 10)
+    threads = []
+    500.times do |i|
+      threads << Thread.new do
+        foo = "foo_#{i}"
+        bar = "bar_#{i}"
+        client.set(foo, "v_#{foo}")
+        client.set(bar, "v_#{bar}")
+        [client.get(foo), client.get(bar)]
+      end
+    end
+    threads.map(&:value)
+  end
 end

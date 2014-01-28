@@ -2,9 +2,10 @@ require 'simple_memcache_client/server'
 
 class SimpleMemcacheClient::Client
 
-  def initialize(hostname, port=11211)
+  def initialize(hostname, port=11211, pool_size=5)
     @hostname = hostname
     @port = port
+    @pool_size = pool_size
   end
 
   def set(key, value, ttl=0)
@@ -17,8 +18,14 @@ class SimpleMemcacheClient::Client
 
   private
 
+  def servers
+    @servers ||= Array.new(@pool_size).map do
+      SimpleMemcacheClient::Server.new(@hostname, @port)
+    end
+  end
+
   def server
-    @server ||= SimpleMemcacheClient::Server.new(@hostname, @port)
+    servers.sample
   end
 
 end
